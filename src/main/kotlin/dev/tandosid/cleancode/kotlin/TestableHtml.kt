@@ -22,33 +22,27 @@ private class TestableHtmlMaker(private val pageData: PageData, private val incl
         if (pageData.hasAttribute("Test")) {
             val mode = "setup"
             if (includeSuiteSetup) {
-                val suiteSetup: WikiPage? = PageCrawlerImpl.getInheritedPage(SuiteResponder.SUITE_SETUP_NAME, wikiPage)
-                if (suiteSetup != null) {
-                    includePage(suiteSetup, mode)
-                }
+                includeIfInherited(SuiteResponder.SUITE_SETUP_NAME, mode)
             }
-            val setup: WikiPage? = PageCrawlerImpl.getInheritedPage("SetUp", wikiPage)
-            if (setup != null) {
-                includePage(setup, mode)
-            }
+            includeIfInherited("SetUp", mode)
         }
         buffer.append(pageData.content)
         if (pageData.hasAttribute("Test")) {
             val mode = "teardown"
-            val teardown: WikiPage? = PageCrawlerImpl.getInheritedPage("TearDown", wikiPage)
-            if (teardown != null) {
-                includePage(teardown, mode)
-            }
+            includeIfInherited("TearDown", mode)
             if (includeSuiteSetup) {
-                val suiteTeardown: WikiPage? =
-                    PageCrawlerImpl.getInheritedPage(SuiteResponder.SUITE_TEARDOWN_NAME, wikiPage)
-                if (suiteTeardown != null) {
-                    includePage(suiteTeardown, mode)
-                }
+                includeIfInherited(SuiteResponder.SUITE_TEARDOWN_NAME, mode)
             }
         }
         pageData.content = buffer.toString()
         return pageData.html
+    }
+
+    private fun includeIfInherited(pageName: String, mode: String) {
+        val page: WikiPage? = PageCrawlerImpl.getInheritedPage(pageName, wikiPage)
+        if (page != null) {
+            includePage(page, mode)
+        }
     }
 
     private fun includePage(page: WikiPage?, mode: String) {
