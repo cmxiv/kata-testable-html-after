@@ -54,7 +54,7 @@ private class TestableHtmlMaker(private val pageData: PageData, private val incl
     private fun includePage(page: WikiPage?, mode: String) {
         val path = wikiPage.pageCrawler.getFullPath(page)
         val pathName = PathParser.render(path)
-        buffer.append("!include -$mode .").append(pathName).append("\n")
+        buffer.append("!include -$mode .$pathName\n")
     }
 
 }
