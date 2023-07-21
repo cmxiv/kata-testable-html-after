@@ -9,6 +9,13 @@ import fitnesse.wiki.WikiPage
 
 class TestableHtml {
     fun testableHtml(pageData: PageData, includeSuiteSetup: Boolean): String {
+        return TestableHtmlMaker(pageData, includeSuiteSetup).make()
+    }
+}
+
+private class TestableHtmlMaker(private val pageData: PageData, private val includeSuiteSetup: Boolean) {
+
+    fun make(): String {
         val wikiPage: WikiPage = pageData.wikiPage
         val buffer = StringBuffer()
         if (pageData.hasAttribute("Test")) {
@@ -48,4 +55,5 @@ class TestableHtml {
         pageData.content = buffer.toString()
         return pageData.html
     }
+
 }
