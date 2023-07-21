@@ -20,22 +20,30 @@ private class TestableHtmlMaker(private val pageData: PageData, private val incl
 
     fun make(): String {
         if (pageData.hasAttribute("Test")) {
-            val mode = "setup"
-            if (includeSuiteSetup) {
-                includeIfInherited(SuiteResponder.SUITE_SETUP_NAME, mode)
-            }
-            includeIfInherited("SetUp", mode)
+            includeSetups()
         }
         buffer.append(pageData.content)
         if (pageData.hasAttribute("Test")) {
-            val mode = "teardown"
-            includeIfInherited("TearDown", mode)
-            if (includeSuiteSetup) {
-                includeIfInherited(SuiteResponder.SUITE_TEARDOWN_NAME, mode)
-            }
+            includeTearDowns()
         }
         pageData.content = buffer.toString()
         return pageData.html
+    }
+
+    private fun includeSetups() {
+        val mode = "setup"
+        if (includeSuiteSetup) {
+            includeIfInherited(SuiteResponder.SUITE_SETUP_NAME, mode)
+        }
+        includeIfInherited("SetUp", mode)
+    }
+
+    private fun includeTearDowns() {
+        val mode = "teardown"
+        includeIfInherited("TearDown", mode)
+        if (includeSuiteSetup) {
+            includeIfInherited(SuiteResponder.SUITE_TEARDOWN_NAME, mode)
+        }
     }
 
     private fun includeIfInherited(pageName: String, mode: String) {
