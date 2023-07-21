@@ -19,7 +19,7 @@ private class TestableHtmlMaker(private val pageData: PageData, private val incl
     var content = ""
 
     fun make(): String {
-        if (pageData.hasAttribute("Test")) {
+        if (pageData.isTestPage()) {
             content += includeSetups()
             content += pageData.content
             content += includeTearDowns()
@@ -28,6 +28,8 @@ private class TestableHtmlMaker(private val pageData: PageData, private val incl
 
         return pageData.html
     }
+
+    private fun PageData.isTestPage() = hasAttribute("Test")
 
     private fun includeSetups(): String {
         var content = ""
