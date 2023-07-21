@@ -9,16 +9,16 @@ import fitnesse.wiki.WikiPage
 
 class TestableHtml {
     fun testableHtml(pageData: PageData, includeSuiteSetup: Boolean): String {
-        return TestableHtmlMaker(pageData, includeSuiteSetup).make()
+        return SetupTeardownSurrounder(pageData, includeSuiteSetup).surround()
     }
 }
 
-private class TestableHtmlMaker(private val pageData: PageData, private val includeSuiteSetup: Boolean) {
+private class SetupTeardownSurrounder(private val pageData: PageData, private val includeSuiteSetup: Boolean) {
 
     val wikiPage: WikiPage = pageData.wikiPage
     var content = ""
 
-    fun make(): String {
+    fun surround(): String {
         if (pageData.isTestPage()) {
             surroundPageWithSetupsAndTearDowns()
         }
