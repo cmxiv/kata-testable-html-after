@@ -21,12 +21,11 @@ private class TestableHtmlMaker(private val pageData: PageData, private val incl
     fun make(): String {
         if (pageData.hasAttribute("Test")) {
             content += includeSetups()
-        }
-        content += pageData.content
-        if (pageData.hasAttribute("Test")) {
+            content += pageData.content
             content += includeTearDowns()
+            pageData.content = content
         }
-        pageData.content = content
+
         return pageData.html
     }
 
