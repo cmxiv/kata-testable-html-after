@@ -15,9 +15,10 @@ class TestableHtml {
 
 private class TestableHtmlMaker(private val pageData: PageData, private val includeSuiteSetup: Boolean) {
 
+    val wikiPage: WikiPage = pageData.wikiPage
+    val buffer = StringBuffer()
+
     fun make(): String {
-        val wikiPage: WikiPage = pageData.wikiPage
-        val buffer = StringBuffer()
         if (pageData.hasAttribute("Test")) {
             if (includeSuiteSetup) {
                 val suiteSetup: WikiPage? = PageCrawlerImpl.getInheritedPage(SuiteResponder.SUITE_SETUP_NAME, wikiPage)
