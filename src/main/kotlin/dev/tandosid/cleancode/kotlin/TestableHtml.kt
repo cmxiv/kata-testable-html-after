@@ -24,16 +24,12 @@ private class TestableHtmlMaker(private val pageData: PageData, private val incl
             if (includeSuiteSetup) {
                 val suiteSetup: WikiPage? = PageCrawlerImpl.getInheritedPage(SuiteResponder.SUITE_SETUP_NAME, wikiPage)
                 if (suiteSetup != null) {
-                    val pagePath = wikiPage.pageCrawler.getFullPath(suiteSetup)
-                    val pagePathName = PathParser.render(pagePath)
-                    buffer.append("!include -$mode .").append(pagePathName).append("\n")
+                    includePage(suiteSetup, mode)
                 }
             }
             val setup: WikiPage? = PageCrawlerImpl.getInheritedPage("SetUp", wikiPage)
             if (setup != null) {
-                val setupPath = wikiPage.pageCrawler.getFullPath(setup)
-                val setupPathName = PathParser.render(setupPath)
-                buffer.append("!include -$mode .").append(setupPathName).append("\n")
+                includePage(setup, mode)
             }
         }
         buffer.append(pageData.content)
@@ -41,22 +37,24 @@ private class TestableHtmlMaker(private val pageData: PageData, private val incl
             val mode = "teardown"
             val teardown: WikiPage? = PageCrawlerImpl.getInheritedPage("TearDown", wikiPage)
             if (teardown != null) {
-                val tearDownPath = wikiPage.pageCrawler.getFullPath(teardown)
-                val tearDownPathName = PathParser.render(tearDownPath)
-                buffer.append("!include -$mode .").append(tearDownPathName).append("\n")
+                includePage(teardown, mode)
             }
             if (includeSuiteSetup) {
                 val suiteTeardown: WikiPage? =
                     PageCrawlerImpl.getInheritedPage(SuiteResponder.SUITE_TEARDOWN_NAME, wikiPage)
                 if (suiteTeardown != null) {
-                    val pagePath = wikiPage.pageCrawler.getFullPath(suiteTeardown)
-                    val pagePathName = PathParser.render(pagePath)
-                    buffer.append("!include -$mode .").append(pagePathName).append("\n")
+                    includePage(suiteTeardown, mode)
                 }
             }
         }
         pageData.content = buffer.toString()
         return pageData.html
+    }
+
+    private fun includePage(page: WikiPage?, mode: String) {
+        val path = wikiPage.pageCrawler.getFullPath(page)
+        val pathName = PathParser.render(path)
+        buffer.append("!include -$mode .").append(pathName).append("\n")
     }
 
 }
